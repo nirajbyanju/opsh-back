@@ -1,0 +1,84 @@
+name: Build & Deploy Laravel API
+
+on:
+  push:
+    branches:
+      - deploy
+
+env:
+  CI: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+
+      - name: Install Composer dependencies
+        run: composer install --no-scripts --no-interaction --prefer-dist
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Generate package-lock.json if missing
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "package-lock.json not found, generating..."
+            npm install --package-lock-only
+          else
+            echo "package-lock.json found, skipping generation."
+          fi
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Build TypeScript and Vite (if applicable)
+        run: npm run build  # Adjust as per your project setup
+
+      - name: Check if build artifacts exist
+        run: |
+          if [ ! -d "./public" ]; then
+            echo "Build directory 'public' not found."
+            exit 1
+          fi
+
+      - name: List build directory contents
+        run: ls -al ./public  # Adjust path as per Laravel's public directory
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: laravel-production-files
+          path: ./public  # Adjust path as per Laravel's public directory
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/deploy'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: laravel-production-files
+          path: ./public  # Adjust path as per Laravel's public directory
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: ftp.opportunitiessharing.com  # Replace with your FTP server address
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./public  # Adjust path as per Laravel's public directory
+          remote-dir: /public_html  # Adjust destination directory on FTP server
