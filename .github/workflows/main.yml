@@ -30,6 +30,9 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Change to correct directory
+        run: cd path/to/your/directory  # Replace with the path to your directory containing package.json
+
       - name: Generate package-lock.json if missing
         run: |
           if [ ! -f package-lock.json ]; then
