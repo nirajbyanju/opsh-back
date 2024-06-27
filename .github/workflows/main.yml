@@ -58,7 +58,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
         with:
           server: ftp.opportunitiessharing.com  # Replace with your FTP server address
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          username: back@back.opportunitiessharing.com
+          password: Naruto2002#10
           local-dir: ./public/  # Ensure this ends with a slash
           server-dir: /public_html  # Adjust destination directory on FTP server
