@@ -25,29 +25,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Change to correct directory
-        run: cd path/to/your/directory  # Replace with the path to your directory containing package.json
-
-      - name: Generate package-lock.json if missing
-        run: |
-          if [ ! -f package-lock.json ]; then
-            echo "package-lock.json not found, generating..."
-            npm install --package-lock-only
-          else
-            echo "package-lock.json found, skipping generation."
-          fi
-
-      - name: Install Node.js dependencies
-        run: npm ci
-
-      - name: Build TypeScript and Vite (if applicable)
-        run: npm run build  # Adjust as per your project setup
-
       - name: Check if build artifacts exist
         run: |
           if [ ! -d "./public" ]; then
