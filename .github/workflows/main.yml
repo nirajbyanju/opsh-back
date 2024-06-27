@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public/  # Adjust path as per Laravel's public directory
+          path: ./public  # Adjust path as per Laravel's public directory
 
   deploy:
     name: Deploy
@@ -52,13 +52,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public/  # Adjust path as per Laravel's public directory
+          path: ./public  # Adjust path as per Laravel's public directory
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
         with:
           server: ftp.opportunitiessharing.com  # Replace with your FTP server address
-          username: back@back.opportunitiessharing.com
-          password: Naruto2002#10
-          local-dir: ./public/  # Ensure this ends with a slash
-          server-dir: /public_html/  # Adjust destination directory on FTP server
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+
