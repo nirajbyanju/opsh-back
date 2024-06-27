@@ -60,6 +60,5 @@ jobs:
           server: ftp.opportunitiessharing.com  # Replace with your FTP server address
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./public  # Adjust path as per Laravel's public directory
-          remote-dir: /public_html  # Adjust destination directory on FTP server
+
 
