@@ -61,4 +61,4 @@ jobs:
           username: back@back.opportunitiessharing.com
           password: Naruto2002#10
           local-dir: ./public/  # Ensure this ends with a slash
-          server-dir: /public_html  # Adjust destination directory on FTP server
+          server-dir: /public_html/  # Adjust destination directory on FTP server
