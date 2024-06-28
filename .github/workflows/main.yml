@@ -45,13 +45,13 @@ jobs:
           fi
 
       - name: List build directory contents
-        run: ls -al ./public  # Adjust path as per Laravel's public directory
+        run: ls -al ./public
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public  # Adjust path as per Laravel's public directory
+          path: ./public
 
   deploy:
     name: Deploy
@@ -67,7 +67,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public  # Adjust path as per Laravel's public directory
+          path: ./public
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
