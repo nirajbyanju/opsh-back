@@ -1,64 +1,56 @@
-name: Build & Deploy Laravel API
+name: Laravel CI/CD
 
 on:
   push:
     branches:
-      - deploy
-
-env:
-  CI: false
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
 
-      - name: Install Composer dependencies
-        run: composer install --no-scripts --no-interaction --prefer-dist
+    - name: Install dependencies
+      run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
-      - name: Check if build artifacts exist
-        run: |
-          if [ ! -d "./public" ]; then
-            echo "Build directory 'public' not found."
-            exit 1
-          fi
+    - name: Generate application key
+      run: php artisan key:generate
 
-      - name: List build directory contents
-        run: ls -al ./public  # Adjust path as per Laravel's public directory
+    - name: Run migrations
+      run: php artisan migrate --force
 
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: laravel-production-files
-          path: ./public  # Adjust path as per Laravel's public directory
+    - name: Cache configuration
+      run: |
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
 
   deploy:
-    name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/deploy'
-
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: laravel-production-files
-          path: ./public  # Adjust path as per Laravel's public directory
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
-        with:
-          server: ftp.opportunitiessharing.com  # Replace with your FTP server address
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-
-
+    - name: Deploy to server
+      uses: SamKirkland/FTP-Deploy-Action@4.2.0
+      with:
+        server: ftp.opportunitiessharing.com
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./
+        server-dir: /path/to/your/application
+        exclude: |
+          .env
+          storage/
+          vendor/
