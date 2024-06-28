@@ -25,8 +25,9 @@ return [
     | services the application utilizes. Set this in your ".env" file.
     |
     */
+    'env' => env('APP_ENV', 'development'),
 
-    'env' => env('APP_ENV', 'production'),
+    // 'env' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
