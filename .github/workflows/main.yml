@@ -1,56 +1,77 @@
-name: Laravel CI/CD
+name: Build & Deploy Laravel API
 
 on:
   push:
     branches:
       - deploy
-  pull_request:
-    branches:
-      - deploy
+
+env:
+  CI: false
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-    - name: Install dependencies
-      run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: Install Composer dependencies
+        run: composer install --no-scripts --no-interaction --prefer-dist
 
-    - name: Generate application key
-      run: php artisan key:generate
+      - name: Generate application key
+        run: php artisan key:generate
 
-    - name: Run migrations
-      run: php artisan migrate --force
+      - name: Run migrations
+        run: php artisan migrate --force
 
-    - name: Cache configuration
-      run: |
-        php artisan config:cache
-        php artisan route:cache
-        php artisan view:cache
+      - name: Cache configuration
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+      - name: Check if build artifacts exist
+        run: |
+          if [ ! -d "./public" ]; then
+            echo "Build directory 'public' not found."
+            exit 1
+          fi
+
+      - name: List build directory contents
+        run: ls -al ./public  # Adjust path as per Laravel's public directory
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: laravel-production-files
+          path: ./public  # Adjust path as per Laravel's public directory
 
   deploy:
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    if: github.ref == 'refs/heads/deploy'
 
-    - name: Deploy to server
-      uses: SamKirkland/FTP-Deploy-Action@4.2.0
-      with:
-        server: ftp.opportunitiessharing.com
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
-        server-dir: /path/to/your/application
-        exclude: |
-          .env
-          storage/
-          vendor/
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: laravel-production-files
+          path: ./public  # Adjust path as per Laravel's public directory
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: ftp.opportunitiessharing.com  # Replace with your FTP server address
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
