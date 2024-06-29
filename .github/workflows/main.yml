@@ -17,13 +17,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
+      - name: Test MySQL Connection
+        run: mysql -h 192.250.235.23 -u opportun_opportun -pY39Bi+hYn;tT05 -e "SHOW DATABASES;"
+        env:
+          CI: false  # Redundant as already set globally
+          COMPOSER_PROCESS_TIMEOUT: 0
+          COMPOSER_NO_INTERACTION: 1
+          COMPOSER_NO_AUDIT: 1
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-
-      - name: Test MySQL Connection
-        run: mysql -h 192.250.235.23 -u opportun_opportun -pY39Bi+hYn;tT05 -e "SHOW DATABASES;"
 
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
