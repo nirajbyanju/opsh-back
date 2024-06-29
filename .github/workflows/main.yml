@@ -13,20 +13,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: opsh
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -36,48 +22,8 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: Wait for MySQL to be ready
-        run: |
-          echo "Waiting for MySQL to be ready..."
-          until mysqladmin ping --host=127.0.0.1 --user=root --password=root --silent; do
-            echo "Waiting for database connection..."
-            sleep 10
-          done
-          echo "MySQL is ready."
-
-      - name: Debug MySQL Connection
-        run: |
-          echo "Trying to connect to MySQL..."
-          mysql --host=127.0.0.1 --user=root --password=root -e "SHOW DATABASES;"
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 192.250.235.23
-          DB_PORT: 3306
-          DB_DATABASE: opportun_opsh
-          DB_USERNAME: opportun_opportun
-          DB_PASSWORD: Y39Bi+hYn;tT05
-
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
-
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Run migrations
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: opportun_opsh
-          DB_USERNAME: opportun_opportun
-          DB_PASSWORD: Y39Bi+hYn;tT05
-        run: php artisan migrate --force
-
-      - name: Cache configuration
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
 
       - name: Check if build artifacts exist
         run: |
@@ -87,13 +33,13 @@ jobs:
           fi
 
       - name: List build directory contents
-        run: ls -al ./public
+        run: ls -al ./public  # Adjust path as per Laravel's public directory
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public
+          path: ./public  # Adjust path as per Laravel's public directory
 
   deploy:
     name: Deploy
@@ -102,14 +48,11 @@ jobs:
     if: github.ref == 'refs/heads/deploy'
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public
+          path: ./public  # Adjust path as per Laravel's public directory
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
@@ -117,3 +60,5 @@ jobs:
           server: ftp.opportunitiessharing.com  # Replace with your FTP server address
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+
+
