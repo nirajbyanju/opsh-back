@@ -13,6 +13,20 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: opsh
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -22,15 +36,27 @@ jobs:
         with:
           php-version: '8.2'
 
+      - name: Wait for MySQL to be ready
+        run: |
+          until mysqladmin ping --host=127.0.0.1 --user=root --password=root --silent; do
+            echo "Waiting for database connection..."
+            sleep 5
+          done
+
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
 
-      - name: Set up environment file
-        run: |
-          cp .env.example .env
-          php artisan key:generate
+      - name: Generate application key
+        run: php artisan key:generate
 
       - name: Run migrations
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: opportun_opsh
+          DB_USERNAME: opportun_opportun
+          DB_PASSWORD: Y39Bi+hYn;tT05
         run: php artisan migrate --force
 
       - name: Cache configuration
