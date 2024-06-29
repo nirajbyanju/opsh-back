@@ -1,74 +1,19 @@
-name: Build & Deploy Laravel API
-
 on:
   push:
     branches:
       - deploy
-
-env:
-  CI: false
-
+name: 🚀 Deploy website on push
 jobs:
-  build:
-    name: Build
+  web-deploy:
+    name: 🎉 Deploy
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-
-      - name: Install Composer dependencies
-        run: composer install --no-scripts --no-interaction --prefer-dist
-
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Cache configuration
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-
-      - name: Check if build artifacts exist
-        run: |
-          if [ ! -d "./public" ]; then
-            echo "Build directory 'public' not found."
-            exit 1
-          fi
-
-      - name: List build directory contents
-        run: ls -al ./public
-
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: laravel-production-files
-          path: ./public
-
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/deploy'
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: laravel-production-files
-          path: ./public
-
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
-        with:
-          server: ftp.opportunitiessharing.com  # Replace with your FTP server address
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v3
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ftp.opportunitiessharing.com
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_password }}
