@@ -25,6 +25,10 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
 
+      - name: Set up environment file
+        run: |
+          cp .env.example .env
+          php artisan key:generate
 
       - name: Run migrations
         run: php artisan migrate --force
