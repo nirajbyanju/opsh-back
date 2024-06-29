@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://back.opportunitiessharing.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +97,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'key' => env('APP_KEY'),
+    'key' => env('APP_KEY', 'base64:dGpoZG5nZ2NkNm11dnFraG1oanZjaG8wbG9rZHhhdGY='),
 
     'previous_keys' => [
         ...array_filter(
