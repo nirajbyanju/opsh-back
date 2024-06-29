@@ -25,6 +25,15 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
 
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Cache configuration
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
       - name: Check if build artifacts exist
         run: |
           if [ ! -d "./public" ]; then
@@ -33,13 +42,13 @@ jobs:
           fi
 
       - name: List build directory contents
-        run: ls -al ./public  # Adjust path as per Laravel's public directory
+        run: ls -al ./public
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public  # Adjust path as per Laravel's public directory
+          path: ./public
 
   deploy:
     name: Deploy
@@ -48,11 +57,14 @@ jobs:
     if: github.ref == 'refs/heads/deploy'
 
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: laravel-production-files
-          path: ./public  # Adjust path as per Laravel's public directory
+          path: ./public
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
@@ -60,5 +72,3 @@ jobs:
           server: ftp.opportunitiessharing.com  # Replace with your FTP server address
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-
-
