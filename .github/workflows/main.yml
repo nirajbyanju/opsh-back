@@ -13,22 +13,49 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: opsh
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-
-      - name: Test MySQL Connection
-        run: mysql -h 192.250.235.23 -u opportun_opportun -pY39Bi+hYn;tT05 -e "SHOW DATABASES;"
-        env:
-          CI: false  # Redundant as already set globally
-          COMPOSER_PROCESS_TIMEOUT: 0
-          COMPOSER_NO_INTERACTION: 1
-          COMPOSER_NO_AUDIT: 1
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          until mysqladmin ping --host=127.0.0.1 --user=root --password=root --silent; do
+            echo "Waiting for database connection..."
+            sleep 10
+          done
+          echo "MySQL is ready."
+
+      - name: Debug MySQL Connection
+        run: |
+          echo "Trying to connect to MySQL..."
+          mysql --host=127.0.0.1 --user=root --password=root -e "SHOW DATABASES;"
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 192.250.235.23
+          DB_PORT: 3306
+          DB_DATABASE: opportun_opsh
+          DB_USERNAME: opportun_opportun
+          DB_PASSWORD: Y39Bi+hYn;tT05
 
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-interaction --prefer-dist
@@ -39,7 +66,7 @@ jobs:
       - name: Run migrations
         env:
           DB_CONNECTION: mysql
-          DB_HOST: 192.250.235.23
+          DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: opportun_opsh
           DB_USERNAME: opportun_opportun
