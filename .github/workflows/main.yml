@@ -51,7 +51,7 @@ jobs:
           mysql --host=127.0.0.1 --user=root --password=root -e "SHOW DATABASES;"
         env:
           DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
+          DB_HOST: 192.250.235.23
           DB_PORT: 3306
           DB_DATABASE: opportun_opsh
           DB_USERNAME: opportun_opportun
@@ -66,7 +66,7 @@ jobs:
       - name: Run migrations
         env:
           DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
+          DB_HOST: 192.250.235.23
           DB_PORT: 3306
           DB_DATABASE: opportun_opsh
           DB_USERNAME: opportun_opportun
