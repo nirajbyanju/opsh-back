@@ -53,7 +53,7 @@ jobs:
     - name: 🔧 Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2' # Specify the PHP version you're using
+        php-version: '8.0' # Specify the PHP version you're using
 
     - name: 📦 Install dependencies
       run: composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -71,4 +71,5 @@ jobs:
         FTP_USERNAME: ${{ secrets.ftp_username }}
         FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
+        set -x # Enable debug mode
         sshpass -p $FTP_PASSWORD ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
