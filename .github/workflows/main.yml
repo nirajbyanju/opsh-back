@@ -14,41 +14,22 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ftp.opportunitiessharing.com
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/vendor/**
-          **/public/vendor/**
-          **/public/installer/**
-          **/public/uploads/**
-          **/storage/framework/**
-          **/storage/app/public/**
-          **/storage/logs/**
-          **/public/images/**
-          **/resources/lang/**
-          **/app/Events/**
-          **/app/Listeners/**
-          **/app/Mail/**
-          **/app/Models/**
-          **/app/Notifications/**
-          **/app/Policies/**
-          **/app/Traits/**
-          **/app/Http/**
-          **/app/Providers/**
-          **/app/Console/**
-          **/app/Exceptions/**
-          **/app/Repositories/**
-          **/public/js/**
-          **/resources/**
-          **/tests/**
-          **/database/**
+    - name: 📂 Sync files using SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ftp.opportunitiessharing.com >> ~/.ssh/known_hosts
+        rsync -avz --exclude='.git*' --exclude='node_modules' --exclude='vendor' \
+          --exclude='public/vendor' --exclude='public/installer' --exclude='public/uploads' \
+          --exclude='storage/framework' --exclude='storage/app/public' --exclude='storage/logs' \
+          --exclude='public/images' --exclude='resources/lang' --exclude='app/Events' \
+          --exclude='app/Listeners' --exclude='app/Mail' --exclude='app/Models' \
+          --exclude='app/Notifications' --exclude='app/Policies' --exclude='app/Traits' \
+          --exclude='app/Http' --exclude='app/Providers' --exclude='app/Console' \
+          --exclude='app/Exceptions' --exclude='app/Repositories' --exclude='public/js' \
+          --exclude='resources' --exclude='tests' --exclude='database' \
+          ./ $FTP_USERNAME@ftp.opportunitiessharing.com:/home/your-cpanel-username/public_html
 
     - name: 🔧 Set up PHP
       uses: shivammathur/setup-php@v2
@@ -67,9 +48,6 @@ jobs:
 
     - name: 🚀 Run migrations
       shell: /usr/bin/bash -e {0}
-      env:
-        FTP_USERNAME: ${{ secrets.ftp_username }}
-        FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
-        set -x # Enable debug mode
-        sshpass -p $FTP_PASSWORD ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd && php artisan migrate'
+        sshpass -p ${{ secrets.FTP_PASSWORD }} ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate --verbose'
+F
