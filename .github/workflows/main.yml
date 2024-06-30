@@ -62,10 +62,13 @@ jobs:
         COMPOSER_NO_INTERACTION: 1
         COMPOSER_NO_AUDIT: 1
 
+    - name: 🛠️ Install sshpass
+      run: sudo apt-get install -y sshpass
+
     - name: 🚀 Run migrations
       shell: /usr/bin/bash -e {0}
       env:
         FTP_USERNAME: ${{ secrets.ftp_username }}
         FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
-        sshpass -p $FTP_PASSWORD ssh $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
+        sshpass -p $FTP_PASSWORD ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
