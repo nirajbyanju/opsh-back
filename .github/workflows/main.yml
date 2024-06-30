@@ -1,19 +1,37 @@
+name: 🚀 Deploy website on push
+
 on:
   push:
     branches:
       - deploy
-name: 🚀 Deploy website on push
+
 jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
+
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
-    
+
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ftp.opportunitiessharing.com
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
+
+    - name: 🔧 Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0' # Specify the PHP version you're using
+
+    - name: 📦 Install dependencies
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    - name: 🚀 Run migrations
+      env:
+        FTP_USERNAME: ${{ secrets.ftp_username }}
+        FTP_PASSWORD: ${{ secrets.ftp_password }}
+      run: |
+        sshpass -p $FTP_PASSWORD ssh $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
