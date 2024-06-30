@@ -20,47 +20,52 @@ jobs:
         server: ftp.opportunitiessharing.com
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/vendor/**
+          **/public/vendor/**
+          **/public/installer/**
+          **/public/uploads/**
+          **/storage/framework/**
+          **/storage/app/public/**
+          **/storage/logs/**
+          **/public/images/**
+          **/resources/lang/**
+          **/app/Events/**
+          **/app/Listeners/**
+          **/app/Mail/**
+          **/app/Models/**
+          **/app/Notifications/**
+          **/app/Policies/**
+          **/app/Traits/**
+          **/app/Http/**
+          **/app/Providers/**
+          **/app/Console/**
+          **/app/Exceptions/**
+          **/app/Repositories/**
+          **/public/js/**
+          **/resources/**
+          **/tests/**
+          **/database/**
 
     - name: 🔧 Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2' # Specify the PHP version you're usingd
+        php-version: '8.2' # Specify the PHP version you're using
 
     - name: 📦 Install dependencies
       run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      env:
+        COMPOSER_PROCESS_TIMEOUT: 0
+        COMPOSER_NO_INTERACTION: 1
+        COMPOSER_NO_AUDIT: 1
 
     - name: 🚀 Run migrations
+      shell: /usr/bin/bash -e {0}
       env:
         FTP_USERNAME: ${{ secrets.ftp_username }}
         FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
         sshpass -p $FTP_PASSWORD ssh $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
-        exclude: |
-        **/.git*
-        **/.git*/**
-        **/node_modules/**
-        **/vendor/**
-        **/public/vendor/**
-        **/public/installer/**
-        **/public/uploads/**
-        **/storage/framework/**
-        **/storage/app/public/**
-        **/storage/logs/**
-        **/public/images/**
-        **/resources/lang/**
-        **/app/Events/**
-        **/app/Listeners/**
-        **/app/Mail/**
-        **/app/Models/**
-        **/app/Notifications/**
-        **/app/Policies/**
-        **/app/Traits/**
-        **/app/Http/**
-        **/app/Providers/**
-        **/app/Console/**
-        **/app/Exceptions/**
-        **/app/Repositories/**
-        **/public/js/**
-        **/resources/**
-        **/tests/**
-        **/database/**
