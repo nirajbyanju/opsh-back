@@ -50,4 +50,3 @@ jobs:
       shell: /usr/bin/bash -e {0}
       run: |
         sshpass -p ${{ secrets.FTP_PASSWORD }} ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate --verbose'
-F
