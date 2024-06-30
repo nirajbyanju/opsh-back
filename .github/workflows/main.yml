@@ -35,3 +35,32 @@ jobs:
         FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
         sshpass -p $FTP_PASSWORD ssh $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
+        exclude: |
+        **/.git*
+        **/.git*/**
+        **/node_modules/**
+        **/vendor/**
+        **/public/vendor/**
+        **/public/installer/**
+        **/public/uploads/**
+        **/storage/framework/**
+        **/storage/app/public/**
+        **/storage/logs/**
+        **/public/images/**
+        **/resources/lang/**
+        **/app/Events/**
+        **/app/Listeners/**
+        **/app/Mail/**
+        **/app/Models/**
+        **/app/Notifications/**
+        **/app/Policies/**
+        **/app/Traits/**
+        **/app/Http/**
+        **/app/Providers/**
+        **/app/Console/**
+        **/app/Exceptions/**
+        **/app/Repositories/**
+        **/public/js/**
+        **/resources/**
+        **/tests/**
+        **/database/**
