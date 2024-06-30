@@ -72,4 +72,4 @@ jobs:
         FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
         set -x # Enable debug mode
-        sshpass -p $FTP_PASSWORD ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate'
+        sshpass -p $FTP_PASSWORD ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd / && php artisan migrate --verbose'
