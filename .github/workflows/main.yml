@@ -29,12 +29,13 @@ jobs:
           --exclude='app/Http' --exclude='app/Providers' --exclude='app/Console' \
           --exclude='app/Exceptions' --exclude='app/Repositories' --exclude='public/js' \
           --exclude='resources' --exclude='tests' --exclude='database' \
+          -e "ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
           ./ $FTP_USERNAME@ftp.opportunitiessharing.com:/home/your-cpanel-username/public_html
 
     - name: 🔧 Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2' # Specify the PHP version you're usingggk
+        php-version: '8.2' # Specify the PHP version you're using
 
     - name: 📦 Install dependencies
       run: composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -48,5 +49,8 @@ jobs:
 
     - name: 🚀 Run migrations
       shell: /usr/bin/bash -e {0}
+      env:
+        FTP_USERNAME: ${{ secrets.ftp_username }}
+        FTP_PASSWORD: ${{ secrets.ftp_password }}
       run: |
-        sshpass -p ${{ secrets.FTP_PASSWORD }} ssh -o StrictHostKeyChecking=no $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate --verbose'
+        sshpass -p ${{ secrets.FTP_PASSWORD }} ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -o IdentitiesOnly=yes $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate --verbose'
