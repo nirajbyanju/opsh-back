@@ -7,5 +7,5 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    echo("Hello");
+    echo("Hellos");
 });
