@@ -1,56 +1,19 @@
-name: 🚀 Deploy website on push
-
 on:
   push:
     branches:
-      - deploy
-
+      - master
+name: 🚀 Deploy website on push
 jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
-
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
-
-    - name: 📂 Sync files using SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ftp.opportunitiessharing.com >> ~/.ssh/known_hosts
-        rsync -avz --exclude='.git*' --exclude='node_modules' --exclude='vendor' \
-          --exclude='public/vendor' --exclude='public/installer' --exclude='public/uploads' \
-          --exclude='storage/framework' --exclude='storage/app/public' --exclude='storage/logs' \
-          --exclude='public/images' --exclude='resources/lang' --exclude='app/Events' \
-          --exclude='app/Listeners' --exclude='app/Mail' --exclude='app/Models' \
-          --exclude='app/Notifications' --exclude='app/Policies' --exclude='app/Traits' \
-          --exclude='app/Http' --exclude='app/Providers' --exclude='app/Console' \
-          --exclude='app/Exceptions' --exclude='app/Repositories' --exclude='public/js' \
-          --exclude='resources' --exclude='tests' --exclude='database' \
-          -e "ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
-          ./ $FTP_USERNAME@ftp.opportunitiessharing.com:/home/your-cpanel-username/public_html
-
-    - name: 🔧 Set up PHP
-      uses: shivammathur/setup-php@v2
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        php-version: '8.2' # Specify the PHP version you're usinghjkg
-
-    - name: 📦 Install dependencies
-      run: composer install --no-interaction --prefer-dist --optimize-autoloader
-      env:
-        COMPOSER_PROCESS_TIMEOUT: 0
-        COMPOSER_NO_INTERACTION: 1
-        COMPOSER_NO_AUDIT: 1
-
-    - name: 🛠️ Install sshpass
-      run: sudo apt-get install -y sshpass
-
-    - name: 🚀 Run migrations
-      shell: /usr/bin/bash -e {0}
-      env:
-        FTP_USERNAME: ${{ secrets.ftp_username }}
-        FTP_PASSWORD: ${{ secrets.ftp_password }}
-      run: |
-        sshpass -p ${{ secrets.FTP_PASSWORD }} ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -o IdentitiesOnly=yes $FTP_USERNAME@ftp.opportunitiessharing.com 'cd /home/your-cpanel-username/public_html && php artisan migrate --verbose'
+        server: ftp.opportunitiessharing.com
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_password }}
