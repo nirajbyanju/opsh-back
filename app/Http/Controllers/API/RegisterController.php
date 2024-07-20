@@ -33,7 +33,7 @@ class RegisterController extends BaseController
             return response()->json([
                 'error' => [
                 'status' => 'error',
-                'message'=> $validator->errors(),
+                'validationErrors'=> $validator->errors(),
                 ],
             ], 422);     
         }
