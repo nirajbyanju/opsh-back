@@ -30,7 +30,10 @@ class RegisterController extends BaseController
         ]);
    
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ], 422);     
         }
    
         $input = $request->all();
