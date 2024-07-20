@@ -32,7 +32,7 @@ class RegisterController extends BaseController
         if($validator->fails()){
             return response()->json([
                 'error' => true,
-                'errors' => $validator->errors()->toArray(),
+                'validationError' => $validator->errors()->toArray(),
             ], 422);     
         }
    
