@@ -74,7 +74,9 @@ class RegisterController extends BaseController
         return response()->json([
             'error' => [
                 'status' => 'error',
-                'validationErrors' => 'Email does not exist',
+                'validationErrors' => [
+                    'email' => ['The email does not exist.']
+                ],
             ],
         ], 404);
     }
@@ -90,10 +92,13 @@ class RegisterController extends BaseController
         return response()->json([
             'error' => [
                 'status' => 'error',
-                'validationErrors' => 'Password incorrect',
+                'validationErrors' => [
+                    'password' => ['The password is incorrect.']
+                ],
             ],
         ], 422);
     }
 }
+
 
 }
