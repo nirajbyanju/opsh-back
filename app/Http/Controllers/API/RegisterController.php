@@ -60,16 +60,40 @@ class RegisterController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request): JsonResponse
-    {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;
-   
-            return $this->sendResponse($success, 'User login successfully.');
-        } 
-        else{ 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        } 
+{
+    // Validate the request data
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Check if the email exists in the system
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json([
+            'error' => [
+                'status' => 'error',
+                'validationErrors' => 'Email does not exist',
+            ],
+        ], 404);
     }
+
+    // Attempt to authenticate the user
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        $user = Auth::user();
+        $success['token'] = $user->createToken('MyApp')->plainTextToken;
+        $success['name'] = $user->name;
+
+        return $this->sendResponse($success, 'User login successfully.');
+    } else {
+        return response()->json([
+            'error' => [
+                'status' => 'error',
+                'validationErrors' => 'Password incorrect',
+            ],
+        ], 422);
+    }
+}
+
 }
