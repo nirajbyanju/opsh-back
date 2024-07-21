@@ -88,7 +88,10 @@ class RegisterController extends BaseController
         $success['user'] = [
             'id' => $user->id,
             'firstName' => $user->first_name,
+            'lastName' => $user->last_name,
+            'userName'=> $user->username,
             'email' => $user->email,
+
             // add any other user information you need
         ];
     
