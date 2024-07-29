@@ -127,8 +127,19 @@ public function sendResetLinkEmail(Request $request)
         return response()->json(['error' => 'Email does not exist.'], 404);
     }
 
+     $token = Password::createToken($user);
+
+    $frontendUrl = $request->base_url . '/reset-password?token=' . $token . '&email=' . urlencode($user->email);
+
     $response = Password::sendResetLink(
-        $request->only('email')
+        ['email' => $request->email],
+        function ($message) use ($user, $frontendUrl) {
+            $message->subject('Reset Password Notification');
+            $message->setBody(view('emails.reset-password', [
+                'userName' => $user->username,
+                'frontendUrl' => $frontendUrl,
+            ])->render(), 'text/html');
+        }
     );
 
     if ($response == Password::RESET_LINK_SENT) {

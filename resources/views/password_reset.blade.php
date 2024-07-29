@@ -72,7 +72,7 @@
                 <a href="{{ $frontendUrl }}" class="button">Reset Password</a>
             </div>
             <p>If you did not request a password reset, no further action is required.</p>
-            <p>Thank you for using {{ $UserName }}!</p>
+            <p>Thank you for using {{ $userName }}!</p>
         </div>
         <div class="email-footer">
             <p>Regards,</p>
