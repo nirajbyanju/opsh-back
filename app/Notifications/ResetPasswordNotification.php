@@ -47,7 +47,7 @@ class ResetPasswordNotification extends Notification
 
     return (new MailMessage)
                 ->subject('Opsh Password Reset Notification')
-                ->view('emails.password_reset', [
+                ->view('password_reset', [
                     'frontendUrl' => $frontendUrl,
                     'logoUrl' => 'https://yourdomain.com/path/to/logo.png',
                     'appName' => 'Opsh',
