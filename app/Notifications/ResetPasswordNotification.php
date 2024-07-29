@@ -42,29 +42,16 @@ class ResetPasswordNotification extends Notification
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
-    {
-        $frontendUrl = $this->baseUrl . '/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email);
+{
+    $frontendUrl = $this->baseUrl . '/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email);
 
-        return (new MailMessage)
-        ->subject('Opsh Password Reset Notification')
-        ->line('<img src="https://opportunitiessharing.com/opcn/images/opportunity/paterner/place-10.png" alt="Opsh Logo" style="max-width: 200px;">')
-        ->line('You are receiving this email because we received a password reset request for your account.')
-        ->action('Reset Password', $frontendUrl)
-        ->line('If you did not request a password reset, no further action is required.')
-        ->line('Regards,')
-        ->line('Opsh');
+    return (new MailMessage)
+                ->subject('Opsh Password Reset Notification')
+                ->view('emails.password_reset', [
+                    'frontendUrl' => $frontendUrl,
+                    'logoUrl' => 'https://yourdomain.com/path/to/logo.png',
+                    'appName' => 'Opsh',
+                ]);
 }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param mixed $notifiable
-     * @return array<string, mixed>
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
-    }
 }
