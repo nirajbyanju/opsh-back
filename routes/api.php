@@ -12,6 +12,6 @@ Route::controller(RegisterController::class)->group(function(){
     Route::post('passwordEmail','sendResetLinkEmail')->name('password.reset');
 });
         
-Route::middleware('auth:sanctum')->group( function () {
-    Route::resource('products', ProductController::class);
-});
+// Route::middleware('auth:sanctum')->group( function () {
+//     Route::resource('products', ProductController::class);
+// });

@@ -114,6 +114,7 @@ public function sendResetLinkEmail(Request $request)
 {
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
+        'base_url' => 'required|url'
     ]);
 
     if ($validator->fails()) {
@@ -126,14 +127,18 @@ public function sendResetLinkEmail(Request $request)
         return response()->json(['error' => 'Email does not exist.'], 404);
     }
 
-    $response = Password::sendResetLink($request->only('email'));
+    $response = Password::sendResetLink(
+        array_merge(
+            $request->only('email'),
+            ['base_url' => $request->base_url]
+        )
+    );
 
     if ($response == Password::RESET_LINK_SENT) {
         return response()->json(['message' => 'Reset link sent to your email.'], 200);
     } else {
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
-}
 
 
 }
