@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules;
    
@@ -108,6 +109,25 @@ class RegisterController extends BaseController
         ], 422);
     }
 }
+
+public function sendResetLinkEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $response = Password::sendResetLink($request->only('email'));
+
+        if ($response == Password::RESET_LINK_SENT) {
+            return response()->json(['message' => 'Reset link sent to your email.'], 200);
+        } else {
+            return response()->json(['error' => 'Unable to send reset link.'], 500);
+        }
+    }
 
 
 }
