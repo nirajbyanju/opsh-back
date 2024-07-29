@@ -112,6 +112,7 @@ class RegisterController extends BaseController
 
 public function sendResetLinkEmail(Request $request)
 {
+    // Validate the request
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'base_url' => 'required|url'
@@ -121,32 +122,38 @@ public function sendResetLinkEmail(Request $request)
         return response()->json(['errors' => $validator->errors()], 422);
     }
 
+    // Find the user by email
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {
         return response()->json(['error' => 'Email does not exist.'], 404);
     }
 
-     $token = Password::createToken($user);
+    // Generate the reset token
+    $token = Password::createToken($user);
 
+    // Construct the frontend URL with the reset token and email
     $frontendUrl = $request->base_url . '/reset-password?token=' . $token . '&email=' . urlencode($user->email);
 
-    $response = Password::sendResetLink(
+    // Send the reset link email
+    $response = Password::broker()->sendResetLink(
         ['email' => $request->email],
         function ($message) use ($user, $frontendUrl) {
             $message->subject('Reset Password Notification');
-            $message->setBody(view('emails.reset-password', [
+            $message->view('emails.reset-password', [
                 'userName' => $user->username,
                 'frontendUrl' => $frontendUrl,
-            ])->render(), 'text/html');
+            ]);
         }
     );
+
+    // Log the response for debugging
+    Log::info('Password reset link response: ', ['response' => $response]);
 
     if ($response == Password::RESET_LINK_SENT) {
         return response()->json(['message' => 'Reset link sent to your email.'], 200);
     } else {
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
-}
 
 }
