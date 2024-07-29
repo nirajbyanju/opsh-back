@@ -43,7 +43,7 @@ class ResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
 {
-    $frontendUrl = $this->baseUrl . '/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email);
+    $frontendUrl = $this->baseUrl . '/tokenSent?token=' . $this->token . '&email=' . urlencode($notifiable->email);
 
     return (new MailMessage)
                 ->subject('Opsh Password Reset Notification')
