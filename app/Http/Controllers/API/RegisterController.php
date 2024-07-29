@@ -128,7 +128,15 @@ public function sendResetLinkEmail(Request $request)
     }
 
     $response = Password::sendResetLink(
-        $request->only('email')
+        $request->only('email'),
+        function ($message) use ($user, $request) {
+            $frontendUrl = $request->base_url . '/reset-password?token=' . Password::createToken($user) . '&email=' . urlencode($user->email);
+            $message->subject('Reset Password Notification');
+            $message->view('emails.reset-password', [
+                'userName' => $user->username,
+                'frontendUrl' => $frontendUrl,
+            ]);
+        }
     );
 
     if ($response == Password::RESET_LINK_SENT) {
@@ -137,5 +145,6 @@ public function sendResetLinkEmail(Request $request)
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
 }
+
 
 }
