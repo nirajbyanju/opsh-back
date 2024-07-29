@@ -9,7 +9,7 @@ use App\Http\Controllers\API\ProductController;
 Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
-    Route::post('passwordEmail','sendResetLinkEmail');
+    Route::post('passwordEmail','sendResetLinkEmail')->name('password.reset');
 });
         
 Route::middleware('auth:sanctum')->group( function () {
