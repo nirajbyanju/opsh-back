@@ -46,11 +46,14 @@ class ResetPasswordNotification extends Notification
         $frontendUrl = $this->baseUrl . '/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email);
 
         return (new MailMessage)
-                    ->subject('Reset Password Notification')
-                    ->line('You are receiving this email because we received a password reset request for your account.')
-                    ->action('Reset Password', $frontendUrl)
-                    ->line('If you did not request a password reset, no further action is required.');
-    }
+        ->subject('Opsh Password Reset Notification')
+        ->line('<img src="https://opportunitiessharing.com/opcn/images/opportunity/paterner/place-10.png" alt="Opsh Logo" style="max-width: 200px;">')
+        ->line('You are receiving this email because we received a password reset request for your account.')
+        ->action('Reset Password', $frontendUrl)
+        ->line('If you did not request a password reset, no further action is required.')
+        ->line('Regards,')
+        ->line('Opsh');
+}
 
     /**
      * Get the array representation of the notification.
