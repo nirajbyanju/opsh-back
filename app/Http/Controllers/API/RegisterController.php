@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log; 
 
    
 class RegisterController extends BaseController
