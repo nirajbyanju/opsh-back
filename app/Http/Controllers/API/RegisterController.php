@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Log; 
-
    
 class RegisterController extends BaseController
 {
@@ -115,7 +112,6 @@ class RegisterController extends BaseController
 
 public function sendResetLinkEmail(Request $request)
 {
-    // Validate the request
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'base_url' => 'required|url'
@@ -125,40 +121,24 @@ public function sendResetLinkEmail(Request $request)
         return response()->json(['errors' => $validator->errors()], 422);
     }
 
-    // Find the user by email
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {
         return response()->json(['error' => 'Email does not exist.'], 404);
     }
 
-    // Generate the reset token
-    $token = Password::createToken($user);
-
-    // Construct the frontend URL with the reset token and email
-    $frontendUrl = $request->base_url . '/reset-password?token=' . $token . '&email=' . urlencode($user->email);
-
-    // Send the reset link email
-    $response = Password::broker()->sendResetLink(
-        ['email' => $request->email],
-        function ($message) use ($user, $frontendUrl) {
-            $message->subject('Reset Password Notification');
-            $message->view('emails.reset-password', [
-                'userName' => $user->username,
-                'frontendUrl' => $frontendUrl,
-            ]);
-        }
+    $response = Password::sendResetLink(
+        array_merge(
+            $request->only('email'),
+            ['base_url' => $request->base_url]
+        )
     );
-
-    // Log the response for debugging
-    Log::info('Password reset link response: ', ['response' => $response]);
 
     if ($response == Password::RESET_LINK_SENT) {
         return response()->json(['message' => 'Reset link sent to your email.'], 200);
     } else {
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
+
 }
-
-
 }
