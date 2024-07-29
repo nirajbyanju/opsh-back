@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
+
    
 class RegisterController extends BaseController
 {
@@ -155,5 +159,7 @@ public function sendResetLinkEmail(Request $request)
     } else {
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
+}
+
 
 }
