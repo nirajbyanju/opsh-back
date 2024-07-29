@@ -128,10 +128,7 @@ public function sendResetLinkEmail(Request $request)
     }
 
     $response = Password::sendResetLink(
-        array_merge(
-            $request->only('email'),
-            ['base_url' => $request->base_url]
-        )
+        $request->only('email')
     );
 
     if ($response == Password::RESET_LINK_SENT) {
@@ -139,6 +136,6 @@ public function sendResetLinkEmail(Request $request)
     } else {
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
-
 }
+
 }
