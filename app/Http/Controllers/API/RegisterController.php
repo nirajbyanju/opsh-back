@@ -140,5 +140,5 @@ public function sendResetLinkEmail(Request $request)
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
 
-
+}
 }
