@@ -112,26 +112,26 @@ class RegisterController extends BaseController
 
 public function sendResetLinkEmail(Request $request)
 {
+    // Validate the input
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
-        'base_url' => 'required|url'
+        // Remove 'base_url' from validation rules if not used
     ]);
 
     if ($validator->fails()) {
         return response()->json(['errors' => $validator->errors()], 422);
     }
 
+    // Retrieve the user by email
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {
         return response()->json(['error' => 'Email does not exist.'], 404);
     }
 
+    // Send the password reset link
     $response = Password::sendResetLink(
-        array_merge(
-            $request->only('email'),
-            ['base_url' => $request->base_url]
-        )
+        $request->only('email')
     );
 
     if ($response == Password::RESET_LINK_SENT) {
@@ -139,6 +139,7 @@ public function sendResetLinkEmail(Request $request)
     } else {
         return response()->json(['error' => 'Unable to send reset link.'], 500);
     }
-
 }
+
+
 }
