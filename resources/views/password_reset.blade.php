@@ -73,11 +73,10 @@
             </div>
             <p>If you did not request a password reset, no further action is required.</p>
             <p>Thank you for using </p>
-        </div>
-        <div class="email-footer">
             <p>Regards,</p>
             <p>OpSh Team</p>
         </div>
+        
     </div>
 </body>
 </html>
