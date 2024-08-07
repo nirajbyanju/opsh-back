@@ -21,6 +21,7 @@ class UsersTableSeeder extends Seeder
             'first_name' => 'Niraj',
             'last_name' => 'Byanju',
             'username' => 'nirajbyanju',
+            'phonenumber' => 9843906039,
             'email' => 'nirajbyanju1234@gmail.com',
             'password' => Hash::make('nirajbyanju'),
             'email_verified_at' => now(),
