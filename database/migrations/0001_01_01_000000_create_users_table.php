@@ -24,7 +24,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->id();
             $table->string('userCode');
-            $table->string('name_tittle');
+            $table->string('name_tittle')->nullable();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('username')->unique();
@@ -70,7 +70,7 @@ return new class extends Migration
             $table->string('board_name');
             $table->string('level');
             $table->string('faculty');
-            $table->year('joined_year');
+            $table->integer('joined_year')->nullable();
             $table->string('gpa')->nullable();
             $table->string('attachment')->nullable();
             $table->timestamps();
@@ -87,7 +87,7 @@ return new class extends Migration
             $table->string('position');
             $table->string('skill')->nullable();
             $table->text('description')->nullable();
-            $table->year('experience_year');
+            $table->integer('experience_year')->nullable();
             $table->string('attachment')->nullable();
             $table->timestamps();
             $table->softDeletes();

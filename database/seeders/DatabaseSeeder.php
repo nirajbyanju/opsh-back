@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,  // Seed permissions
             UsersTableSeeder::class,  // Seed users
             UsersDetailsSeeder::class,// Seed user details
-            UserEducation::class,     // Seed user education
-            UserExperience::class,    // Seed user experience
+            UserEducationSeeder::class,     // Seed user education
+            UserExperienceSeeder::class,    // Seed user experience
             RoleUserSeeder::class,    // Seed role-user pivot table
             PermissionRoleSeeder::class, // Seed 
         ]);

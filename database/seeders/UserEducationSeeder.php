@@ -13,14 +13,14 @@ class UserEducationSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('user_education')->insert([
+        DB::table('user_education')->insert([
             'user_id' => 1,
             'board_name' => 'BoardName',
             'level' => 'Bachelor',
             'faculty' => 'FacultyName',
             'joined_year' => 2010,
-            'gpa' => '3.5',
-            'attachment' => 'path/to/attachment.pdf',
+            'gpa' => '3.0',
+            'attachment' => 'attachment.pdf',
         ]);
     }
 }

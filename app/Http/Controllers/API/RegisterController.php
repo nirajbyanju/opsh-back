@@ -20,6 +20,9 @@ class RegisterController extends BaseController
      */
     public function register(Request $request): JsonResponse
     {
+        $currentYear = now()->year;
+        $latestId = User::max('id') + 1;
+        $userCode = "Opsh-{$currentYear}-{$latestId}";
         $validator = Validator::make($request->all(), [
            'firstName' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
@@ -40,6 +43,7 @@ class RegisterController extends BaseController
         }
    
         $input = $request->all();
+        $input['userCode'] = $userCode;
         $input['first_name'] = $request->input('firstName');
         $input['last_name'] = $request->input('lastName');
         $input['email'] = $request->input('email');
