@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules;
+use App\Http\Requests\RegisterUserRequest;
    
 class RegisterController extends BaseController
 {
@@ -18,46 +19,36 @@ class RegisterController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterUserRequest $request): JsonResponse
     {
         $currentYear = now()->year;
         $latestId = User::max('id') + 1;
         $userCode = "Opsh-{$currentYear}-{$latestId}";
-        $validator = Validator::make($request->all(), [
-           'firstName' => ['required', 'string', 'max:255'],
-            'lastName' => ['required', 'string', 'max:255'],
-            'userName' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phoneNumber' => ['required', 'integer', 'unique:users,phone_number'],
-            'password' => ['required', Rules\Password::defaults(), 'same:cPassword'],
-            'cPassword' => ['required', Rules\Password::defaults()],
-        ]);
-   
-        if($validator->fails()){
-            return response()->json([
-                'error' => [
-                'status' => 'error',
-                'validationErrors'=> $validator->errors(),
-                ],
-            ], 422);     
-        }
-   
+    
         $input = $request->all();
         $input['userCode'] = $userCode;
-        $input['first_name'] = $request->input('firstName');
-        $input['last_name'] = $request->input('lastName');
-        $input['email'] = $request->input('email');
-        $input['username'] = $request->input('userName');
-        $input['phone_number'] = $request->input('phoneNumber');
-        $input['password'] = bcrypt($input['password']);
+        $input['first_name'] = $request->firstName;
+        $input['last_name'] = $request->lastName;
+        $input['email'] = $request->email;
+        $input['username'] = $request->userName;
+        $input['phone_number'] = $request->phoneNumber;
+        $input['password'] = Hash::make($input['password']);
         $input['status'] = '1';
         
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
-   
-        return $this->sendResponse($success, 'User register successfully.');
+        $success['token'] = $user->createToken('MyApp')->plainTextToken;
+        $success['name'] = $user->first_name . ' ' . $user->last_name;
+    
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'token' => $success['token'],
+                'name' => $success['name'],
+            ],
+            'message' => 'User registered successfully.',
+        ], 201);
     }
+    
    
     /**
      * Login api

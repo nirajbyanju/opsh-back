@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserTypeSeeder::class,    // Seed user types first
             RoleSeeder::class,        // Seed roles
             PermissionSeeder::class,  // Seed permissions
             UsersTableSeeder::class,  // Seed users
