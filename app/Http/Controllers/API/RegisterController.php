@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rules;
 use App\Http\Requests\RegisterUserRequest;
+use App\Events\UserRegistered;
+use Illuminate\Support\Facades\Hash;
+
    
 class RegisterController extends BaseController
 {
@@ -21,6 +23,8 @@ class RegisterController extends BaseController
      */
     public function register(RegisterUserRequest $request): JsonResponse
     {
+
+
         $currentYear = now()->year;
         $latestId = User::max('id') + 1;
         $userCode = "Opsh-{$currentYear}-{$latestId}";
@@ -36,6 +40,9 @@ class RegisterController extends BaseController
         $input['status'] = '1';
         
         $user = User::create($input);
+
+        UserRegistered::dispatch($user);
+
         $success['token'] = $user->createToken('MyApp')->plainTextToken;
         $success['name'] = $user->first_name . ' ' . $user->last_name;
     
