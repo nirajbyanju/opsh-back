@@ -34,11 +34,16 @@ class SendWelcomeEmail
             'created_by' => $user->id,
         ]);
 
-        // Notify admins and other users
         $admins = User::whereHas('roles', function ($query) {
-            $query->whereIn('roles.id', [1, 2]);
-        })->with('roles')->get();
+            $query->whereIn('role_id', [1, 2]);
+        })
+        ->whereNull('deleted_at')
+        ->get();
         
+        
+        
+
+     
 
         foreach ($admins as $admin) {
             // Create a user_notification record for each admin
