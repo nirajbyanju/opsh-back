@@ -18,9 +18,10 @@ class NotificationController extends Controller
     public function getUserNotifications($userId)
     {
         $notifications = $this->notificationRepository->getUserNotifications($userId);
+        $messages = $notifications->pluck('notification.message');
 
-        event(new NotificationSent($userId, $notifications));
+        event(new NotificationSent($userId, $messages));
 
-        return response()->json($notifications);
+        return response()->json($messages);
     }
 }
