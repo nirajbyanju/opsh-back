@@ -18,7 +18,6 @@ class NotificationController extends Controller
     public function getUserNotifications($userId)
     {
         $notifications = $this->notificationRepository->getUserNotifications($userId);
-        die($notifications);
 
         event(new NotificationSent($userId, $notifications));
 
