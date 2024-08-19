@@ -178,20 +178,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    @vite('resources/js/app.js')
 </head>
 <body>
-
 </body>
 <script>
-    // Replace '1' with the actual user ID you want to listen for
-    let userID = 1;
+    document.addEventListener('DOMContentLoaded', () => {
+        let userID = 1;
 
-    setTimeout(() => {
-        window.Echo.private(`private-channel.user.${userID}`)
-        .listen('App\\Events\\NotificationSent', (e) => {
-            console.log(e);
-        });
-    }, 200);
+        setTimeout(() => {
+            if (window.Echo) {
+                window.Echo.private(`private-channel.user.${userID}`)
+                .listen('NotificationSent', (e) => {
+                    console.log(e);
+                });
+            } else {
+                console.error('Echo is not initialized');
+            }
+        }, 200);
+    });
 </script>
+</html>
 
-</html>l

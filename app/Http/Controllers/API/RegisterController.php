@@ -97,7 +97,6 @@ class RegisterController extends BaseController
 
             // add any other user information you need
         ];
-        event(new NotificationSent);
     
         return $this->sendResponse($success, 'User login successfully.');
     }
