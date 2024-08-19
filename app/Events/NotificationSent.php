@@ -16,23 +16,12 @@ class NotificationSent implements ShouldBroadcast
     public $userId;
     public $notifications;
 
-    /**
-     * Create a new event instance.
-     *
-     * @param int $userId
-     * @param array $notifications
-     */
     public function __construct($userId, $notifications)
     {
         $this->userId = $userId;
         $this->notifications = $notifications;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn(): array
     {
         return [
@@ -40,11 +29,6 @@ class NotificationSent implements ShouldBroadcast
         ];
     }
 
-    /**
-     * Get the data to broadcast.
-     *
-     * @return array
-     */
     public function broadcastWith(): array
     {
         return [
@@ -52,3 +36,4 @@ class NotificationSent implements ShouldBroadcast
         ];
     }
 }
+
