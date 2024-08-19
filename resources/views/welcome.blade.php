@@ -180,7 +180,7 @@
     <title>Document</title>
 </head>
 <body>
-    @vite('resources/js/app.js')
+
 </body>
 <script>
     // Replace '1' with the actual user ID you want to listen for
