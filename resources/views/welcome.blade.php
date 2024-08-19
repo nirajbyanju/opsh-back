@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
@@ -169,4 +169,29 @@
             </div>
         </div>
     </body>
-</html>
+</html> --}}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    @vite('resources/js/app.js')
+</body>
+<script>
+    // Replace '1' with the actual user ID you want to listen for
+    let userID = 1;
+
+    setTimeout(() => {
+        window.Echo.private(`private-channel.user.${userID}`)
+        .listen('App\\Events\\NotificationSent', (e) => {
+            console.log(e);
+        });
+    }, 200);
+</script>
+
+</html>l

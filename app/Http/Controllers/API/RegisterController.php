@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\RegisterUserRequest;
 use App\Events\UserRegistered;
 use Illuminate\Support\Facades\Hash;
+use App\Events\NotificationSent;
 
    
 class RegisterController extends BaseController
@@ -23,7 +24,6 @@ class RegisterController extends BaseController
      */
     public function register(RegisterUserRequest $request): JsonResponse
     {
-
 
         $currentYear = now()->year;
         $latestId = User::max('id') + 1;
@@ -97,6 +97,7 @@ class RegisterController extends BaseController
 
             // add any other user information you need
         ];
+        event(new NotificationSent);
     
         return $this->sendResponse($success, 'User login successfully.');
     }

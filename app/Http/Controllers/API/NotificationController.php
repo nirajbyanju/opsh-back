@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
-use App\Events\NotificationSent;
 
 class NotificationController extends Controller
 {
@@ -19,8 +18,6 @@ class NotificationController extends Controller
     {
         $notifications = $this->notificationRepository->getUserNotifications($userId);
         $messages = $notifications->pluck('notification.message');
-
-        event(new NotificationSent($userId, $messages));
 
         return response()->json($messages);
     }
