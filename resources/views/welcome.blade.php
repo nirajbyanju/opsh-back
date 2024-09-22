@@ -1,4 +1,4 @@
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
@@ -169,34 +169,4 @@
             </div>
         </div>
     </body>
-</html> --}}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    @vite('resources/js/app.js')
-</head>
-<body>
-</body>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        let userID = 1;
-
-        setTimeout(() => {
-            if (window.Echo) {
-                window.Echo.private(`private-channel.user.${userID}`)
-                .listen('NotificationSent', (e) => {
-                    console.log(e);
-                });
-            } else {
-                console.error('Echo is not initialized');
-            }
-        }, 200);
-    });
-</script>
 </html>
-
