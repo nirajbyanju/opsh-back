@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\RegisterUserRequest;
 use App\Events\UserRegistered;
+use App\Events\SendNotification;
 use Illuminate\Support\Facades\Hash;
-use App\Events\NotificationSent;
 
    
 class RegisterController extends BaseController
@@ -42,6 +42,13 @@ class RegisterController extends BaseController
         $user = User::create($input);
 
         UserRegistered::dispatch($user);
+
+        $data = [
+            'message' => "New user created {$user->username}", 
+            'id' => $user->id 
+        ];
+        
+        event(new SendNotification($data));
 
         $success['token'] = $user->createToken('MyApp')->plainTextToken;
         $success['name'] = $user->first_name . ' ' . $user->last_name;
