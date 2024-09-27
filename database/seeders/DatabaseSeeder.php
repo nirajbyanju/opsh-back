@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             UserExperienceSeeder::class,    // Seed user experience
             RoleUserSeeder::class,    // Seed role-user pivot table
             PermissionRoleSeeder::class, // Seed 
+            CategorySeeder::class,
         ]);
     }
 }

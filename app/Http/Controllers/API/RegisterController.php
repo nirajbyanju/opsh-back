@@ -13,56 +13,33 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Events\UserRegistered;
 use App\Events\SendNotification;
 use Illuminate\Support\Facades\Hash;
+use App\Services\RegistrationService;
 
    
 class RegisterController extends BaseController
 {
-    /**
-     * Register api
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $registrationService;
+
+    public function __construct(RegistrationService $registrationService)
+    {
+        $this->registrationService = $registrationService;
+    }
+
     public function register(RegisterUserRequest $request): JsonResponse
     {
+        // Use the service to register the user
+        $userData = $this->registrationService->registerUser($request->all());
 
-        $currentYear = now()->year;
-        $latestId = User::max('id') + 1;
-        $userCode = "Opsh-{$currentYear}-{$latestId}";
-    
-        $input = $request->all();
-        $input['userCode'] = $userCode;
-        $input['first_name'] = $request->firstName;
-        $input['last_name'] = $request->lastName;
-        $input['email'] = $request->email;
-        $input['username'] = $request->userName;
-        $input['phone_number'] = $request->phoneNumber;
-        $input['password'] = Hash::make($input['password']);
-        $input['status'] = '1';
-        
-        $user = User::create($input);
-
-        UserRegistered::dispatch($user);
-
-        $data = [
-            'message' => "New user created {$user->username}", 
-            'id' => $user->id 
-        ];
-        
-        event(new SendNotification($data));
-
-        $success['token'] = $user->createToken('MyApp')->plainTextToken;
-        $success['name'] = $user->first_name . ' ' . $user->last_name;
-    
         return response()->json([
             'success' => true,
             'data' => [
-                'token' => $success['token'],
-                'name' => $success['name'],
+                'token' => $userData['token'],
+                'name' => $userData['name'],
             ],
             'message' => 'User registered successfully.',
         ], 201);
     }
-    
+
    
     /**
      * Login api
