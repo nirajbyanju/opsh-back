@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => [$data['message']
+            'datas' => [$data['message']
             ],
             'message' => 'User registered successfully.',
         ], 201);
@@ -36,7 +36,7 @@ class CategoryController extends Controller
         
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'datas' => $data,
             'message' => 'Categories have been successfully listed',
         ], 200);
     }
@@ -45,7 +45,7 @@ class CategoryController extends Controller
         $data = $this->categoryService->getCategoryById($id);
         return response()->json([
             'success' => true,
-            'data' =>  $data,
+            'datas' =>  $data,
             'message' => 'Category have been successfully listed',
         ], 200);
 
@@ -55,7 +55,7 @@ class CategoryController extends Controller
         $data = $this->categoryService->getUpdateById($id, $request->all());
         return response()->json([
             'success' =>true,
-            'data' =>$data,
+            'datas' =>$data,
             'message' => 'Category have been successfully updated',
         ], 200);
     }
@@ -64,7 +64,7 @@ class CategoryController extends Controller
         $data = $this->categoryService->getDeleteById($id);
         return response()->json([
             'success' =>true,
-            'data' =>$data,
+            'datas' =>$data,
             'message' => 'Category have been successfully delete',
         ], 200);
     }
