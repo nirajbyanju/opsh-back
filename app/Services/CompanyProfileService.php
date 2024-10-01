@@ -6,24 +6,31 @@ use App\Models\vacancy\CompanyProfile;
 class CompanyProfileService
 {
     
-    public function CreateCompanyProfile (array  $data)
+    use Illuminate\Support\Facades\Storage;
+
+    public function CreateCompanyProfile(array $data)
     {
         $mappedData = [
             'company_name' => $data['companyName'] ?? null,
             'category_id' => $data['categoryId'] ?? null,
             'email' => $data['email'] ?? null,
             'phone_number' => $data['phoneNumber'] ?? null,
-            'website' => $data['website'] ?? null, // Use null coalescing here
+            'website' => $data['website'] ?? null,
             'location' => $data['location'] ?? null,
             'established' => $data['established'] ?? null,
             'team_size' => $data['team_size'] ?? null,
-            'logo' => $data['logo'] ?? null,
             'description' => $data['description'] ?? null,
         ];
-        
+    
+        // Check if 'logo' is a file and handle the file upload
+        if (isset($data['logo']) && $data['logo'] instanceof \Illuminate\Http\UploadedFile) {
+            // Store the logo and get the file path
+            $mappedData['logo'] = $data['logo']->store('logos', 'public');
+        }
+    
         CompanyProfile::create($mappedData);
-        
     }
+    
 
     public function listActiveCompanyProfile()
     {
