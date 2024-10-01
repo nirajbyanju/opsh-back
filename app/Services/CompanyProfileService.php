@@ -2,12 +2,11 @@
 namespace App\Services;
 
 use App\Models\vacancy\CompanyProfile;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyProfileService
 {
     
-    use Illuminate\Support\Facades\Storage;
-
     public function CreateCompanyProfile(array $data)
     {
         $mappedData = [
