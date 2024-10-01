@@ -25,9 +25,9 @@ class CompanyProfileRequest extends FormRequest
     {
         return [
             'companyName' => ['required'],
-            'categoryId' => ['required'],
+            // 'categoryId' => ['required'],
             'location' => ['required'],
-            'logo' =>['required'],
+            // 'logo' =>['required'],
             'description' => ['required']
         ];
     }
