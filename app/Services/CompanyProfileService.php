@@ -2,32 +2,38 @@
 namespace App\Services;
 
 use App\Models\vacancy\CompanyProfile;
-use Illuminate\Support\Facades\Storage;
 
 class CompanyProfileService
 {
     
-    public function CreateCompanyProfile(array $data)
-    {
-        $mappedData = [
-            'company_name' => $data['companyName'] ?? null,
-            'category_id' => $data['categoryId'] ?? null,
-            'email' => $data['email'] ?? null,
-            'phone_number' => $data['phoneNumber'] ?? null,
-            'website' => $data['website'] ?? null,
-            'location' => $data['location'] ?? null,
-            'established' => $data['established'] ?? null,
-            'team_size' => $data['team_size'] ?? null,
-            'description' => $data['description'] ?? null,
-        ];
-    
-        // Check if 'logo' is a file and handle the file upload
-        if (isset($data['logo']) && $data['logo'] instanceof \Illuminate\Http\UploadedFile) {
-            // Store the logo and get the file path
-            $mappedData['logo'] = $data['logo']->store('logos', 'public');
-        }
-    
-        CompanyProfile::create($mappedData);
+   public function CreateCompanyProfile(array $data)
+{
+    $mappedData = [
+        'company_name' => $data['companyName'] ?? null,
+        'category_id' => $data['categoryId'] ?? null,
+        'email' => $data['email'] ?? null,
+        'phone_number' => $data['phoneNumber'] ?? null,
+        'website' => $data['website'] ?? null,
+        'location' => $data['location'] ?? null,
+        'established' => $data['established'] ?? null,
+        'team_size' => $data['team_size'] ?? null,
+        'description' => $data['description'] ?? null,
+    ];
+
+    // Handle file upload
+    if (isset($data['logo']) && $data['logo']->isValid()) {
+        $file = $data['logo'];
+        $extension = $file->getClientOriginalExtension();
+        $filename = time() . '.' . $extension;
+        $file->move(public_path('logos'), $filename);
+
+        // Add the logo URL to the mapped data
+        $mappedData['logo'] = asset('logos/' . $filename); // Use asset() to generate a linkable URL
+    } else {
+        $mappedData['logo'] = $data['logo'] ?? null;
+    }
+
+    CompanyProfile::create($mappedData);
     }
     
 
