@@ -57,7 +57,7 @@ class CompanyProfileService
             'website' => $data['website'] ?? null, // Use null coalescing here
             'location' => $data['location'] ?? null,
             'established' => $data['established'] ?? null,
-            'team_size' => $data['team_size'] ?? null,
+            'team_size' => $data['teamSize'] ?? null,
             'logo' => $data['logo'] ?? null,
             'description' => $data['description'] ?? null,
         ];
