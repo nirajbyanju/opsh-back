@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->string('location');
             $table->date('established')->nullable();
-            $table->unsignedInteger('team_size')->nullable();
+            $table->string('team_size')->nullable();
             $table->string('logo')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(true);
