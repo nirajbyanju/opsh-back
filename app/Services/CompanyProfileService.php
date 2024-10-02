@@ -16,7 +16,7 @@ class CompanyProfileService
         'website' => $data['website'] ?? null,
         'location' => $data['location'] ?? null,
         'established' => $data['established'] ?? null,
-        'team_size' => $data['team_size'] ?? null,
+        'team_size' => $data['teamSize'] ?? null,
         'description' => $data['description'] ?? null,
     ];
 
