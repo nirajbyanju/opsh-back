@@ -33,8 +33,7 @@ class CompanyProfile extends Model
 
     public function getEstablishedAttribute($value)
     {
-        // Format the date to 'j M Y' when accessing it
-        return Carbon::parse($value)->format('j M Y');
+        return Carbon::parse($value)->format('M j, Y');
     }
 
 
