@@ -39,7 +39,7 @@ class CompanyProfileService
 
     public function listActiveCompanyProfile()
     {
-        return CompanyProfile::active()->get();
+        return CompanyProfile::with('category')->active()->get();
     }
 
     public function getCompanyProfileById($id)
