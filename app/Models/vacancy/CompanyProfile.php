@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
-use App\Traits\CastsCamelCaseAttributes; // Import the trait
+use App\Traits\CastsCamelCaseAttributes;
+use Carbon\Carbon;
 
 class CompanyProfile extends Model
 {
@@ -29,6 +30,13 @@ class CompanyProfile extends Model
         'status',
         'verified_at'
     ];
+
+    public function setEstablixhedAttribute($value)
+    {
+        if ($value){
+            $this->attributtes['established'] = Carbon::createFromFormate('j M Y', $value)->format('Y-m-d');
+        }
+    }
 
     public function category()
     {
