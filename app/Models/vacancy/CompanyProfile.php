@@ -31,12 +31,12 @@ class CompanyProfile extends Model
         'verified_at'
     ];
 
-    public function setEstablixhedAttribute($value)
+    public function getEstablishedAttribute($value)
     {
-        if ($value){
-            $this->attributtes['established'] = Carbon::createFromFormate('j M Y', $value)->format('Y-m-d');
-        }
+        // Format the date to 'j M Y' when accessing it
+        return Carbon::parse($value)->format('j M Y');
     }
+
 
     public function category()
     {
