@@ -7,15 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
+use App\Traits\CastsCamelCaseAttributes; // Import the trait
 
 class CompanyProfile extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, CastsCamelCaseAttributes; 
 
-    // Define the table name if it's not the default plural of the model name
     protected $table = 'va_company_profiles';
 
-    // Mass-assignable attributes
     protected $fillable = [
         'company_name',
         'category_id',
@@ -31,7 +30,6 @@ class CompanyProfile extends Model
         'verified_at'
     ];
 
-    // If you have a Category model, define the relationship
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
@@ -41,6 +39,4 @@ class CompanyProfile extends Model
     {
         return $query->where('status', 1);
     }
-
-    // You can define other relationships here as needed
 }
