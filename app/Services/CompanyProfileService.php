@@ -6,36 +6,22 @@ use App\Models\vacancy\CompanyProfile;
 class CompanyProfileService
 {
     
-   public function CreateCompanyProfile(array $data)
-{
-    $mappedData = [
-        'company_name' => $data['companyName'] ?? null,
-        'category_id' => $data['categoryId'] ?? null,
-        'email' => $data['email'] ?? null,
-        'phone_number' => $data['phoneNumber'] ?? null,
-        'website' => $data['website'] ?? null,
-        'location' => $data['location'] ?? null,
-        'established' => $data['established'] ?? null,
-        'team_size' => $data['teamSize'] ?? null,
-        'description' => $data['description'] ?? null,
-    ];
+   public function CreateCompanyProfile(array $data): CompanyProfile
+    {
+        // Handle logo file upload if present
+        if (isset($data['logo']) && $data['logo']->isValid()) {
+            $file = $data['logo'];
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move(public_path('logos'), $filename);
 
-    // Handle file upload
-    if (isset($data['logo']) && $data['logo']->isValid()) {
-        $file = $data['logo'];
-        $extension = $file->getClientOriginalExtension();
-        $filename = time() . '.' . $extension;
-        $file->move(public_path('logos'), $filename);
+            // Add the logo URL to the data array
+            $data['logo'] = asset('logos/' . $filename);
+        }
 
-        // Add the logo URL to the mapped data
-        $mappedData['logo'] = asset('logos/' . $filename); // Use asset() to generate a linkable URL
-    } else {
-        $mappedData['logo'] = $data['logo'] ?? null;
+        // Use the trait's automatic camelCase-to-snake_case conversion
+        return CompanyProfile::create($data);
     }
-
-    CompanyProfile::create($mappedData);
-    }
-    
 
     public function listActiveCompanyProfile()
     {
