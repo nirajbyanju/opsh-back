@@ -33,7 +33,8 @@ class CompanyProfileService
         $mappedData['logo'] = $data['logo'] ?? null;
     }
 
-    CompanyProfile::create($mappedData);
+    return CompanyProfile::create($mappedData);
+
     }
     
 

@@ -18,10 +18,11 @@ class CompanyProfileController extends Controller
     }
 
     public function create (CompanyProfileRequest $request): JsonResponse{
-        $this->companyProfileService->CreateCompanyProfile($request->all());
+        $companyProfile = $this->companyProfileService->CreateCompanyProfile($request->all());
         return response()->json([
             'success' => true,
             'message' => 'Company Profile  added successfully.',
+            'data' => $companyProfile,
         ], 201);
     }
 
