@@ -33,7 +33,10 @@ class CompanyProfileService
         $mappedData['logo'] = $data['logo'] ?? null;
     }
 
-    return CompanyProfile::create($mappedData)->with('category');
+    $companyProfile = CompanyProfile::create($mappedData);
+
+    // Retrieve the created profile with the associated category
+    return CompanyProfile::with('category')->find($companyProfile->id);
 
     }
     
