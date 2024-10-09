@@ -44,9 +44,7 @@ class CompanyProfileController extends Controller
 
         return response()-> json([
                 'success' =>true,
-                'data' =>[
-                    'company' => $data,
-                ],
+                'data' => $data,
                 'message' => 'Category have been successfully listed',
             ], 200);
     }
