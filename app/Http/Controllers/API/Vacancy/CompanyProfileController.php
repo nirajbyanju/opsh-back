@@ -32,7 +32,7 @@ class CompanyProfileController extends Controller
 
         return response()->json([
             'success' => true,
-            'dating' => $data,
+            'data' => $data,
             'message' => 'Company Profile have been successfully listed',
         ], 200);
     }
