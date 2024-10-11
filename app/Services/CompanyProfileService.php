@@ -18,6 +18,12 @@ class CompanyProfileService
         'established' => $data['established'] ?? null,
         'team_size' => $data['teamSize'] ?? null,
         'description' => $data['description'] ?? null,
+        'created_by' => $data['created_by'] ?? null,
+        'verified_by' => $data['verified_by'] ?? null,
+        'status' => $data['status'] ?? null,
+        'verified_at' => $data['verified_at'] ?? null,
+        
+
     ];
 
     // Handle file upload
@@ -72,15 +78,18 @@ class CompanyProfileService
     {
         $mappedData = [
             'company_name' => $data['companyName'] ?? null,
-            'category_id' => $data['categoryId'] ?? null,
-            'email' => $data['email'] ?? null,
-            'phone_number' => $data['phoneNumber'] ?? null,
-            'website' => $data['website'] ?? null, // Use null coalescing here
-            'location' => $data['location'] ?? null,
-            'established' => $data['established'] ?? null,
-            'team_size' => $data['teamSize'] ?? null,
-            'logo' => $data['logo'] ?? null,
-            'description' => $data['description'] ?? null,
+        'category_id' => $data['categoryId'] ?? null,
+        'email' => $data['email'] ?? null,
+        'phone_number' => $data['phoneNumber'] ?? null,
+        'website' => $data['website'] ?? null,
+        'location' => $data['location'] ?? null,
+        'established' => $data['established'] ?? null,
+        'team_size' => $data['teamSize'] ?? null,
+        'description' => $data['description'] ?? null,
+        'created_by' => $data['created_by'] ?? null,
+        'verified_by' => $data['verified_by'] ?? null,
+        'status' => $data['status'] ?? null,
+        'verified_at' => $data['verified_at'] ?? null,
         ];
         $data = CompanyProfile::findOrFail($id);
         $data->update( $mappedData);
