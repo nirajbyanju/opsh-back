@@ -23,7 +23,9 @@ return new class extends Migration
             $table->string('team_size')->nullable();
             $table->string('logo')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('status')->default(true);
+            $table->boolean('status');
+            $table->foreignId('verified_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
