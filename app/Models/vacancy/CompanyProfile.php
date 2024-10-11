@@ -28,6 +28,8 @@ class CompanyProfile extends Model
         'logo',
         'description',
         'status',
+        'verified_by',
+        'created_by',
         'verified_at'
     ];
 
