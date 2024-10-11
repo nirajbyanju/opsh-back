@@ -41,10 +41,27 @@ class CompanyProfileService
     }
     
 
-    public function listActiveCompanyProfile()
+    public function listActiveCompanyProfile($request)
     {
-        return CompanyProfile::with('category')->active()->get();
+
+        $sortBy = $request->input('sort_by', 'created_at');
+        $perPage = $request->input('per_page', 10);
+        $categoryId = $request->input('category_id');
+        $sortDirection = $request->input('sort_direction', 'desc');
+    
+        $query = CompanyProfile::with('category')
+            ->active();  
+
+        if (!empty($categoryId)) {
+            $query->where('category_id', $categoryId);
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+    
+        // Return the paginated results
+        return $query->paginate($perPage);
     }
+    
 
     public function getCompanyProfileById($id)
     {

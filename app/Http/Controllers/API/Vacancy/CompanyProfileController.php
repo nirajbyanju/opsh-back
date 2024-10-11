@@ -26,9 +26,9 @@ class CompanyProfileController extends Controller
         ], 201);
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $data = $this->companyProfileService->listActiveCompanyProfile();
+        $data = $this->companyProfileService->listActiveCompanyProfile($request);
 
         return response()->json([
             'success' => true,
