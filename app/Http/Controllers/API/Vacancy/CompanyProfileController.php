@@ -28,12 +28,26 @@ class CompanyProfileController extends Controller
 
     public function list(Request $request)
     {
-        $data = $this->companyProfileService->listActiveCompanyProfile($request);
-
+        $paginatedResults = $this->companyProfileService->listActiveCompanyProfile($request);
+    
+        if ($paginatedResults->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No posts available',
+                'data' => [],
+            ], 404);
+        }
+    
         return response()->json([
-            'success' => true,
-            'data' => $data,
-            'message' => 'Company Profile have been successfully listed',
+            'status' => true,
+            'message' => 'List of posts',
+            'data' => $paginatedResults->items(),
+            'pagination' => [
+                'total' => $paginatedResults->total(), // Total records
+                'per_page' => $paginatedResults->perPage(), // Items per page
+                'current_page' => $paginatedResults->currentPage(), // Current page
+                'last_page' => $paginatedResults->lastPage(), // Last page number
+            ],
         ], 200);
     }
 
