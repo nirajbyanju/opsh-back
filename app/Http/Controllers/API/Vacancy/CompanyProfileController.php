@@ -41,8 +41,8 @@ class CompanyProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'List of posts',
-            'data' => $paginatedResults->items(),
-            'pagination' => [
+            'data' => [
+                'data' => $paginatedResults->items(),
                 'total' => $paginatedResults->total(), // Total records
                 'per_page' => $paginatedResults->perPage(), // Items per page
                 'current_page' => $paginatedResults->currentPage(), // Current page
