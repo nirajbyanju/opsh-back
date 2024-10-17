@@ -60,7 +60,7 @@ class CompanyProfileService
         $orderBy = $request->get('order_by', 'DESC'); // Default to DESC
         $categoryId = $request->get('categoryId'); // Get categoryId if exists
         $limit = $request->get('limit', 10); // Default limit of 10
-        $page = $request->get('page', 1); // Default to page 1
+        $page = $request->get('page', 1); // Default to page 1 if not provided
     
         // Initialize the query
         $query = CompanyProfile::with('category')->active();
@@ -73,7 +73,7 @@ class CompanyProfileService
         // Apply sorting
         $query->orderBy('id', $orderBy);
     
-        // Use paginate method to handle both limit and page
+        // Apply pagination using limit and page
         $paginatedResults = $query->paginate($limit, ['*'], 'page', $page);
     
         // Return the paginated response
