@@ -69,6 +69,9 @@ class CompanyProfileService
         if (!empty($categoryId)) {
             $query->where('category_id', $categoryId);
         }
+        if($request->has('offset') && is_numeric($request->offset)) {      
+            $query->skip($request->offset);
+              }
     
         // Apply sorting
         $query->orderBy('id', $orderBy);

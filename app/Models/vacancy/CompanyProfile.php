@@ -33,10 +33,10 @@ class CompanyProfile extends Model
         'verified_at'
     ];
 
-    public function getEstablishedAttribute($value)
-    {
-        return Carbon::parse($value)->format('M j, Y');
-    }
+    // public function getEstablishedAttribute($value)
+    // {
+    //     return Carbon::parse($value)->format('M j, Y');
+    // }
 
 
     public function category()
