@@ -83,9 +83,6 @@ class CompanyProfileService
         return $paginatedResults;
     }
     
-    
-    
-
     public function getCompanyProfileById($id)
     {
         return CompanyProfile::findorFail($id);
@@ -110,6 +107,14 @@ class CompanyProfileService
         ];
         $data = CompanyProfile::findOrFail($id);
         $data->update($mappedData);
+        return $data;
+    }
+
+    public function getUpdateStatusById($id, $status)
+    {
+        $data = CompanyProfile::findOrFail($id);
+        $data->status = $status;
+        $data->save();
         return $data;
     }
 

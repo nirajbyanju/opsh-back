@@ -72,6 +72,17 @@ class CompanyProfileController extends Controller
         ], 200);
     }
 
+    public function updateStatus($id, $status): JsonResponse{
+        $data = $this->companyProfileService->getUpdateStatusById($id, $status);
+        return response()->json([
+            'success' =>true,
+            'data' =>[
+                'category' =>$data,
+            ],
+            'message' => 'Category have been successfully updated',
+        ], 200);
+    }
+
     public function delete($id): JsonResponse{
         $data = $this->companyProfileService->getDeleteById($id);
         return response()->json([
@@ -82,4 +93,5 @@ class CompanyProfileController extends Controller
             'message' => 'Category have been successfully delete',
         ], 200);
     }
+
 }
