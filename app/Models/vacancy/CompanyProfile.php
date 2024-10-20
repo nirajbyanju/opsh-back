@@ -33,11 +33,11 @@ class CompanyProfile extends Model
         'verified_at'
     ];
 
-    // public function getEstablishedAttribute($value)
-    // {
-    //     return Carbon::parse($value)->format('M j, Y');
-    // }
 
+    public function formattedDate()
+    {
+        return Carbon::parse($this->attributes['established'])->format('M j, Y');
+    }
 
     public function category()
     {
@@ -47,5 +47,16 @@ class CompanyProfile extends Model
     public function scopeActive(Builder $query)
     {
         return $query->where('status', 1);
+    }
+
+    // Override the toArray method to include the formatted date
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        // Add a new variable for the formatted established date
+        $array['formatted_date'] = $this->formattedDate();
+
+        return $array;
     }
 }
