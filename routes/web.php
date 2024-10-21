@@ -37,3 +37,19 @@ Route::get('/migration-refresh', function () {
         ], 500);
     }
 });
+
+Route::get('/clear-all', function () {
+    // Clear route cache
+    Artisan::call('route:clear');
+
+    // Clear application cache
+    Artisan::call('cache:clear');
+
+    // Clear configuration cache
+    Artisan::call('config:clear');
+
+    // Optionally return a response
+    return response()->json([
+        'message' => 'All caches cleared successfully!',
+    ]);
+});
