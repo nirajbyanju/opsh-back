@@ -63,7 +63,7 @@ class CompanyProfileService
         $page = $request->get('page', 1); // Default to page 1 if not provided
     
         // Initialize the query
-        $query = CompanyProfile::with('category')->active();
+        $query = CompanyProfile::with('category');
     
         // Filter by category if applicable
         if (!empty($categoryId)) {
