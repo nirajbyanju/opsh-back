@@ -78,6 +78,7 @@ class CompanyProfileController extends Controller
 
     public function updateStatus($id, StatusUpdateRequest $request)
 {
+    die();
     // Fetch the data using the service
     $data = $this->companyProfileService->getUpdateStatusById($id, $request);
 
