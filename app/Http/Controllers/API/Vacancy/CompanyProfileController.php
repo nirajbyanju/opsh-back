@@ -69,9 +69,7 @@ class CompanyProfileController extends Controller
         $data = $this->companyProfileService->getUpdateById($id, $request->all());
         return response()->json([
             'success' => true,
-            'data' => [
-                'category' => $data,
-            ],
+            'data' =>  $data,
             'message' => 'Category have been successfully updated',
         ], 200);
     }
@@ -84,9 +82,7 @@ class CompanyProfileController extends Controller
     // Return a JSON response with success status and updated data
     return response()->json([
         'success' => true,
-        'data' => [
-            'category' => $data,  // Assuming 'category' is correct
-        ],
+        'data' =>  $data,  // Assuming 'category' is correct
         'message' => 'Category has been successfully updated',
     ], 200);
 }
