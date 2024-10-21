@@ -36,7 +36,6 @@ class CompanyProfileService
 
         ];
 
-        // Handle file upload
         if (isset($data['logo']) && $data['logo']->isValid()) {
             $file = $data['logo'];
             $extension = $file->getClientOriginalExtension();
@@ -60,7 +59,8 @@ class CompanyProfileService
         $orderBy = $request->get('order_by', 'DESC'); // Default to DESC
         $categoryId = $request->get('categoryId'); // Get categoryId if exists
         $limit = $request->get('limit', 10); // Default limit of 10
-        $page = $request->get('page', 1); // Default to page 1 if not provided
+        $page = $request->get('page', 1);
+        $search = $request->get('search'); 
     
         // Initialize the query
         $query = CompanyProfile::with('category');
@@ -72,6 +72,10 @@ class CompanyProfileService
         if($request->has('offset') && is_numeric($request->offset)) {      
             $query->skip($request->offset);
               }
+    
+              if (!empty($search)) {
+                $query->where('company_name', 'like', '%' . $search . '%');
+            }
     
         // Apply sorting
         $query->orderBy('id', $orderBy);
