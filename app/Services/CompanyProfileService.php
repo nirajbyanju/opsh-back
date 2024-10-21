@@ -110,12 +110,12 @@ class CompanyProfileService
         return $data;
     }
 
-    public function getUpdateStatusById($id, $status)
+    public function getUpdateStatusById($id, $data)
     {
-        $data = CompanyProfile::findOrFail($id);
-        $data->status = $status;
-        $data->save();
-        return $data;
+        $companyProfile = CompanyProfile::findOrFail($id);;
+        $companyProfile->status = $data['status'];
+        $companyProfile->save();
+        return $companyProfile;
     }
 
     public function getDeleteById($id)
