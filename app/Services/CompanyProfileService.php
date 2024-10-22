@@ -105,6 +105,7 @@ class CompanyProfileService
 
     public function getUpdateById($id, array $data)
     {
+        // Map the incoming data
         $mappedData = [
             'company_name' => $data['companyName'] ?? null,
             'category_id' => $data['categoryId'] ?? null,
@@ -120,21 +121,25 @@ class CompanyProfileService
             'status' => $data['status'] ?? null,
             'verified_at' => $data['verified_at'] ?? null,
         ];
-        if (isset($data['logo']) && $data['logo']->isValid()) {
-            $file = $data['logo'];
+    
+        // Handle file upload if the logo exists
+        if (request()->hasFile('logo') && request()->file('logo')->isValid()) {
+            $file = request()->file('logo');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('logos'), $filename);
-
+    
+            // Save the file path to mapped data
             $mappedData['logo'] = asset('logos/' . $filename); 
-        } else {
-            $mappedData['logo'] = $data['logo'] ?? null;
-        }
-
-        $data = CompanyProfile::findOrFail($id);
-        $data->update($mappedData);
-        return $data;
+        } 
+    
+        // Find the company profile and update
+        $companyProfile = CompanyProfile::findOrFail($id);
+        $companyProfile->update($mappedData);
+    
+        return $companyProfile;
     }
+    
 
     public function getUpdateStatusById($id, $data)
     {
