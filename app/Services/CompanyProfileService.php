@@ -32,8 +32,6 @@ class CompanyProfileService
             'verified_by' => $data['verifiedBy'] ?? null,
             'status' => $data['status'] ?? null,
             'verified_at' => $data['verifiedAt'] ?? null,
-
-
         ];
 
         if (isset($data['logo']) && $data['logo']->isValid()) {
@@ -70,6 +68,18 @@ class CompanyProfileService
             'established' => $request->get('established'),
             'status' => $request->get('status'),
         ];
+
+        if (isset($data['logo']) && $data['logo']->isValid()) {
+            $file = $data['logo'];
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move(public_path('logos'), $filename);
+
+            // Add the logo URL to the mapped data
+            $filters['logo'] = asset('logos/' . $filename); // Use asset() to generate a linkable URL
+        } else {
+            $filters['logo'] = $data['logo'] ?? null;
+        }
     
         // Initialize the query with eager loading
         $query = CompanyProfile::with('category');
