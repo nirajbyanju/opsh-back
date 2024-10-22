@@ -69,8 +69,8 @@ class CompanyProfileService
             'status' => $request->get('status'),
         ];
 
-        if (isset($data['logo']) && $data['logo']->isValid()) {
-            $file = $data['logo'];
+        if (isset($request['logo']) && $request['logo']->isValid()) {
+            $file = $request['logo'];
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('logos'), $filename);
