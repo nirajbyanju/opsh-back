@@ -126,7 +126,7 @@ class CompanyProfileService
             $filename = time() . '.' . $extension;
             $file->move(public_path('logos'), $filename);
 
-            $mappedData['logo'] = asset('logos/' . $filename); // Use asset() to generate a linkable URL
+            $mappedData['logo'] = asset('logos/' . $filename); 
         } else {
             $mappedData['logo'] = $data['logo'] ?? null;
         }
