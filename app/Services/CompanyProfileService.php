@@ -54,12 +54,11 @@ class CompanyProfileService
 
     public function listActiveCompanyProfile($request)
     {
-        // Set default values and validate order, limit, and page
+        // Set default values and sanitize input
         $orderBy = in_array(strtoupper($request->get('order_by')), ['ASC', 'DESC']) ? strtoupper($request->get('order_by')) : 'DESC';
         $limit = is_numeric($request->get('limit')) ? $request->get('limit') : 10;
         $page = is_numeric($request->get('page')) ? $request->get('page') : 1;
-    
-        // Collect filters from the request
+
         $filters = [
             'category_id' => $request->get('categoryId'),
             'company_name' => $request->get('companyName'),
@@ -69,19 +68,9 @@ class CompanyProfileService
             'established' => $request->get('established'),
             'status' => $request->get('status'),
         ];
-    
-        // Handle file upload if a logo is provided and valid
-        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
-            $file = $request->file('logo');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move(public_path('logos'), $filename);
-            $filters['logo'] = asset('logos/' . $filename);
-        }
-    
-        // Initialize the query with eager loading
+
         $query = CompanyProfile::with('category');
-    
+
         // Apply filters dynamically
         foreach ($filters as $column => $value) {
             if (!empty($value)) {
@@ -92,23 +81,22 @@ class CompanyProfileService
                 }
             }
         }
-    
+
         // Apply offset if provided
-        if ($request->has('offset') && is_numeric($request->get('offset'))) {
-            $query->skip($request->get('offset'));
+        if ($request->has('offset') && is_numeric($request->offset)) {
+            $query->skip($request->offset);
         }
-    
+
         // Apply sorting
         $query->orderBy('id', $orderBy);
-    
+
         // Paginate the results
         $paginatedResults = $query->paginate($limit, ['*'], 'page', $page);
-    
+
         // Return the paginated response
         return $paginatedResults;
     }
-    
-    
+
 
     public function getCompanyProfileById($id)
     {
@@ -127,11 +115,22 @@ class CompanyProfileService
             'established' => $data['established'] ?? null,
             'team_size' => $data['teamSize'] ?? null,
             'description' => $data['description'] ?? null,
-            'created_by' => $data['created_by'] ?? null,
+            'created_by' => $data['createdBy'] ?? null,
             'verified_by' => $data['verified_by'] ?? null,
             'status' => $data['status'] ?? null,
             'verified_at' => $data['verified_at'] ?? null,
         ];
+        if (isset($data['logo']) && $data['logo']->isValid()) {
+            $file = $data['logo'];
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move(public_path('logos'), $filename);
+
+            $mappedData['logo'] = asset('logos/' . $filename); // Use asset() to generate a linkable URL
+        } else {
+            $mappedData['logo'] = $data['logo'] ?? null;
+        }
+
         $data = CompanyProfile::findOrFail($id);
         $data->update($mappedData);
         return $data;
