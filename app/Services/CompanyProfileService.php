@@ -61,7 +61,6 @@ class CompanyProfileService
         $limit = is_numeric($request->get('limit')) ? $request->get('limit') : 10;
         $page = is_numeric($request->get('page')) ? $request->get('page') : 1;
     
-        // Filter parameters
         $filters = [
             'category_id' => $request->get('categoryId'),
             'company_name' => $request->get('companyName'),
