@@ -54,11 +54,12 @@ class CompanyProfileService
 
     public function listActiveCompanyProfile($request)
     {
-        // Set default values and sanitize input
+        // Set default values and validate order, limit, and page
         $orderBy = in_array(strtoupper($request->get('order_by')), ['ASC', 'DESC']) ? strtoupper($request->get('order_by')) : 'DESC';
         $limit = is_numeric($request->get('limit')) ? $request->get('limit') : 10;
         $page = is_numeric($request->get('page')) ? $request->get('page') : 1;
     
+        // Collect filters from the request
         $filters = [
             'category_id' => $request->get('categoryId'),
             'company_name' => $request->get('companyName'),
@@ -68,17 +69,14 @@ class CompanyProfileService
             'established' => $request->get('established'),
             'status' => $request->get('status'),
         ];
-
-        if (isset($request['logo']) && $request['logo']->isValid()) {
-            $file = $request['logo'];
+    
+        // Handle file upload if a logo is provided and valid
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+            $file = $request->file('logo');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('logos'), $filename);
-
-            // Add the logo URL to the mapped data
-            $filters['logo'] = asset('logos/' . $filename); // Use asset() to generate a linkable URL
-        } else {
-            $filters['logo'] = $data['logo'] ?? null;
+            $filters['logo'] = asset('logos/' . $filename);
         }
     
         // Initialize the query with eager loading
@@ -96,8 +94,8 @@ class CompanyProfileService
         }
     
         // Apply offset if provided
-        if ($request->has('offset') && is_numeric($request->offset)) {
-            $query->skip($request->offset);
+        if ($request->has('offset') && is_numeric($request->get('offset'))) {
+            $query->skip($request->get('offset'));
         }
     
         // Apply sorting
@@ -109,6 +107,7 @@ class CompanyProfileService
         // Return the paginated response
         return $paginatedResults;
     }
+    
     
 
     public function getCompanyProfileById($id)
