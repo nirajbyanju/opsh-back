@@ -15,7 +15,7 @@ class CompanyProfileService
         $userRoles = $user->roles()->pluck('name')->toArray();
         $data['status']  = 0;
         if (in_array('Admin', $userRoles) || in_array('Super Admin', $userRoles)) {
-            $data['status']  = 1; 
+            $data['status']  = 1;
         }
 
         $mappedData = [
@@ -56,37 +56,52 @@ class CompanyProfileService
 
     public function listActiveCompanyProfile($request)
     {
-        $orderBy = $request->get('order_by', 'DESC'); // Default to DESC
-        $categoryId = $request->get('categoryId'); // Get categoryId if exists
-        $limit = $request->get('limit', 10); // Default limit of 10
-        $page = $request->get('page', 1);
-        $search = $request->get('search'); 
+        // Set default values and sanitize input
+        $orderBy = in_array(strtoupper($request->get('order_by')), ['ASC', 'DESC']) ? strtoupper($request->get('order_by')) : 'DESC';
+        $limit = is_numeric($request->get('limit')) ? $request->get('limit') : 10;
+        $page = is_numeric($request->get('page')) ? $request->get('page') : 1;
     
-        // Initialize the query
+        // Filter parameters
+        $filters = [
+            'category_id' => $request->get('categoryId'),
+            'company_name' => $request->get('companyName'),
+            'team_size' => $request->get('teamSize'),
+            'location' => $request->get('location'),
+            'phone_number' => $request->get('phoneNumber'),
+            'established' => $request->get('established'),
+            'status' => $request->get('status'),
+        ];
+    
+        // Initialize the query with eager loading
         $query = CompanyProfile::with('category');
     
-        // Filter by category if applicable
-        if (!empty($categoryId)) {
-            $query->where('category_id', $categoryId);
-        }
-        if($request->has('offset') && is_numeric($request->offset)) {      
-            $query->skip($request->offset);
-              }
-    
-              if (!empty($search)) {
-                $query->where('company_name', 'like', '%' . $search . '%');
+        // Apply filters dynamically
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                if ($column === 'company_name') {
+                    $query->where($column, 'like', '%' . $value . '%');
+                } else {
+                    $query->where($column, $value);
+                }
             }
+        }
+    
+        // Apply offset if provided
+        if ($request->has('offset') && is_numeric($request->offset)) {
+            $query->skip($request->offset);
+        }
     
         // Apply sorting
         $query->orderBy('id', $orderBy);
     
-        // Apply pagination using limit and page
+        // Paginate the results
         $paginatedResults = $query->paginate($limit, ['*'], 'page', $page);
     
         // Return the paginated response
         return $paginatedResults;
     }
     
+
     public function getCompanyProfileById($id)
     {
         return CompanyProfile::findorFail($id);
