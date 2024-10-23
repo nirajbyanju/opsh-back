@@ -30,7 +30,7 @@ Route::prefix('companyProfile')->controller(CompanyProfileController::class)->gr
     Route::get('/', 'list')->name('companyProfile.list')->middleware('throttle:60,1'); 
     Route::post('/', 'create')->name('companyProfile.create')->middleware('throttle:10,1');
     Route::get('/{id}', 'listing')->name('companyProfile.show')->middleware('throttle:30,1'); 
-    Route::patch('/{id}', 'update')->name('companyProfile.update'); 
+    Route::post('/{id}', 'update')->name('companyProfile.update'); 
     Route::patch('/status/{id}', 'updateStatus')->name('companyProfile.updateStatus')->middleware('throttle:30,1');
     Route::delete('/{id}', 'delete')->name('companyProfile.delete')->middleware('throttle:30,1');
 });
