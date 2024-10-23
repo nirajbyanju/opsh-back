@@ -73,7 +73,7 @@ class CompanyProfileService
 
         // Apply filters dynamically
         foreach ($filters as $column => $value) {
-            if (!empty($value)) {
+            if ($value !== null && $value !== '')
                 if ($column === 'company_name') {
                     $query->where($column, 'like', '%' . $value . '%');
                 } else {
