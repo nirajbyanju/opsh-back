@@ -71,15 +71,14 @@ class CompanyProfileService
 
         $query = CompanyProfile::with('category');
 
-        // Apply filters dynamically
         foreach ($filters as $column => $value) {
-           
+            if (isset($value)) { 
                 if ($column === 'company_name') {
                     $query->where($column, 'like', '%' . $value . '%');
                 } else {
                     $query->where($column, $value);
                 }
-            
+            }
         }
 
         // Apply offset if provided
@@ -121,25 +120,25 @@ class CompanyProfileService
             'status' => $data['status'] ?? null,
             'verified_at' => $data['verified_at'] ?? null,
         ];
-    
+
         // Handle file upload if the logo exists
         if (request()->hasFile('logo') && request()->file('logo')->isValid()) {
             $file = request()->file('logo');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('logos'), $filename);
-    
+
             // Save the file path to mapped data
-            $mappedData['logo'] = asset('logos/' . $filename); 
-        } 
-    
+            $mappedData['logo'] = asset('logos/' . $filename);
+        }
+
         // Find the company profile and update
         $companyProfile = CompanyProfile::findOrFail($id);
         $companyProfile->update($mappedData);
-    
+
         return $companyProfile;
     }
-    
+
 
     public function getUpdateStatusById($id, $data)
     {
