@@ -97,7 +97,7 @@ class CompanyProfileService
         return CompanyProfile::findorFail($id);
     }
 
-    public function getUpdateById($id, array $data)
+    public function getUpdateById($id, $data)
     {
         $mappedData = [
             'company_name' => $data['companyName'] ?? null,
