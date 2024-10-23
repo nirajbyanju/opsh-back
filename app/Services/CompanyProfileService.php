@@ -54,7 +54,6 @@ class CompanyProfileService
 
     public function listActiveCompanyProfile($request)
     {
-        // Set default values and sanitize input
         $orderBy = in_array(strtoupper($request->get('order_by')), ['ASC', 'DESC']) ? strtoupper($request->get('order_by')) : 'DESC';
         $limit = is_numeric($request->get('limit')) ? $request->get('limit') : 10;
         $page = is_numeric($request->get('page')) ? $request->get('page') : 1;
@@ -80,18 +79,14 @@ class CompanyProfileService
                 }
             }
         }
-
         // Apply offset if provided
         if ($request->has('offset') && is_numeric($request->offset)) {
             $query->skip($request->offset);
         }
-
         // Apply sorting
         $query->orderBy('id', $orderBy);
-
         // Paginate the results
         $paginatedResults = $query->paginate($limit, ['*'], 'page', $page);
-
         // Return the paginated response
         return $paginatedResults;
     }
@@ -104,7 +99,6 @@ class CompanyProfileService
 
     public function getUpdateById($id, array $data)
     {
-        // Map the incoming data
         $mappedData = [
             'company_name' => $data['companyName'] ?? null,
             'category_id' => $data['categoryId'] ?? null,

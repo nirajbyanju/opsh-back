@@ -66,6 +66,7 @@ class CompanyProfileController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
+        die('hello');
         $data = $this->companyProfileService->getUpdateById($id, $request->all());
         return response()->json([
             'success' => true,
